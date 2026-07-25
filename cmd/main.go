@@ -20,10 +20,11 @@ import (
 )
 
 var (
-	verboseFlag bool // True if -v passed
-	isUserFlag  bool // True if run as quadlet-user-generator executable
-	inputPath   string
-	outputPath  string
+	verboseFlag                bool // True if -v passed
+	isUserFlag                 bool // True if run as quadlet-user-generator executable
+	unsupportedServiceKeysFlag bool
+	inputPath                  string
+	outputPath                 string
 )
 
 var void struct{}
@@ -349,8 +350,10 @@ func process() error {
 		var service *parser.UnitFile
 		var warnings, err error
 
-		if warning := warnIfUnsupportedServiceKeys(unit); warning != nil {
-			return warning
+		if !unsupportedServiceKeysFlag {
+			if warning := warnIfUnsupportedServiceKeys(unit); warning != nil {
+				return warning
+			}
 		}
 
 		switch {
@@ -402,6 +405,7 @@ func process() error {
 func init() {
 	flag.BoolVar(&verboseFlag, "v", false, "Print debug information")
 	flag.BoolVar(&isUserFlag, "user", false, "Run as systemd user")
+	flag.BoolVar(&unsupportedServiceKeysFlag, "unsupported-service-keys", false, "Allow unsupported service keys (e.g. User, Group)")
 	flag.StringVar(&inputPath, "input", "", "Input directory")
 	flag.StringVar(&outputPath, "output", "", "Output directory")
 }

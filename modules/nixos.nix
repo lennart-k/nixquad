@@ -13,9 +13,10 @@ let
   cfg = config.virtualisation.nixquad;
   serviceGenerator = pkgs.buildGoModule {
     name = "quadlet-service-builder";
-    vendorHash = "sha256-CaXGDTiKHvRSJKYpfqf/GC65VpqFumomAJ0E7PP6j7w=";
+    vendorHash = "sha256-DjxjEnl9w43hrkYeDMBTQGO/JyJ/q1ekuZQglPw8CSE=";
     src = ../.;
   };
+  unsupportedServiceKeysFlag = if cfg.unsupportedServiceKeys then "-unsupported-service-keys" else "";
 in
 {
   options.virtualisation.nixquad = import ./options.nix { inherit config lib pkgs; };
@@ -67,7 +68,7 @@ in
 
         buildPhase = ''
           mkdir -p "$out"
-          PODMAN="${pkgs.podman}/bin/podman" ${serviceGenerator}/bin/cmd -input "${inputDir}" -output "$out"
+          PODMAN="${config.virtualisation.podman.package}/bin/podman" ${serviceGenerator}/bin/cmd ${unsupportedServiceKeysFlag} -input "${inputDir}" -output "$out"
         '';
       };
     in
