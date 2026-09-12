@@ -17,6 +17,7 @@ let
     src = ../.;
   };
   unsupportedServiceKeysFlag = if cfg.unsupportedServiceKeys then "-unsupported-service-keys" else "";
+  userFlag = if cfg.user then "-user" else "";
 in
 {
   options.virtualisation.nixquad = import ./options.nix { inherit config lib pkgs; };
@@ -68,7 +69,7 @@ in
 
         buildPhase = ''
           mkdir -p "$out"
-          PODMAN="${config.virtualisation.podman.package}/bin/podman" ${serviceGenerator}/bin/cmd ${unsupportedServiceKeysFlag} -input "${inputDir}" -output "$out"
+          PODMAN="${config.virtualisation.podman.package}/bin/podman" ${serviceGenerator}/bin/cmd ${userFlag} ${unsupportedServiceKeysFlag} -input "${inputDir}" -output "$out"
         '';
       };
     in

@@ -299,9 +299,6 @@ func main() {
 }
 
 func process() error {
-	prgname := path.Base(os.Args[0])
-	isUserFlag = strings.Contains(prgname, "user")
-
 	flag.Parse()
 
 	if verboseFlag {
