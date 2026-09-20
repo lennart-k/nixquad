@@ -13,7 +13,7 @@ let
   cfg = config.virtualisation.nixquad;
   serviceGenerator = pkgs.buildGoModule {
     name = "quadlet-service-builder";
-    vendorHash = "sha256-MJ3104LtETRf66M/MBuP/+OQsuTILyybLTirEXEdtEw";
+    vendorHash = "sha256-+t05THqs/csH6MttV7qJi4ELKKXjtlRUHQszrv/zOXU";
     src = ../.;
   };
   unsupportedServiceKeysFlag = if cfg.unsupportedServiceKeys then "-unsupported-service-keys" else "";
