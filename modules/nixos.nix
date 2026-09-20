@@ -13,7 +13,7 @@ let
   cfg = config.virtualisation.nixquad;
   serviceGenerator = pkgs.buildGoModule {
     name = "quadlet-service-builder";
-    vendorHash = "sha256-DjxjEnl9w43hrkYeDMBTQGO/JyJ/q1ekuZQglPw8CSE=";
+    vendorHash = "sha256-MJ3104LtETRf66M/MBuP/+OQsuTILyybLTirEXEdtEw";
     src = ../.;
   };
   unsupportedServiceKeysFlag = if cfg.unsupportedServiceKeys then "-unsupported-service-keys" else "";
@@ -75,13 +75,20 @@ in
     in
     {
       systemd.units = lib.listToAttrs (
-        lib.attrsets.mapAttrsToList (name: value: {
-          name = mapQuadletServiceName name;
-          value = {
-            text = builtins.readFile "${quadletServices}/${mapQuadletServiceName name}";
+        lib.attrsets.mapAttrsToList (
+          name: value:
+          let
+            servicetext = builtins.readFile "${quadletServices}/${mapQuadletServiceName name}";
+          in
+          {
+            name = mapQuadletServiceName name;
+            value = {
+              text = servicetext;
+              # text = builtins.replaceStrings [ "=%t" ] [ "=%t/user/${builtins.toString userid}" ] servicetext;
+            }
+            // (builtins.fromJSON (builtins.readFile "${quadletServices}/${mapQuadletServiceName name}.json"));
           }
-          // (builtins.fromJSON (builtins.readFile "${quadletServices}/${mapQuadletServiceName name}.json"));
-        }) quadletConfigs
+        ) quadletConfigs
       );
     }
   );
