@@ -49,7 +49,8 @@ in
           else if ext == "artifact" then
             base + "-artifact.service"
           else if ext == "pod" then
-            base + "-pod.service"
+            lib.builtins.throw ("pods are unsupported at the moment: (input: " + quadletName + ")")
+          # base + "-pod.service"
           else
             lib.builtins.throw ("unsupported extension: " + ext + " (input: " + quadletName + ")");
 
